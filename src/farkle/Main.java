@@ -9,11 +9,10 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -23,12 +22,20 @@ public class Main extends Application {
     Button rollButton = new Button("Roll");
     Button stopButton = new Button("Score & Stop");
 
+    ScoreBoard scoreBoard = new ScoreBoard();
+
     SplitPane gamePane = new SplitPane();
-    PlayerBoard nextPlayer = new PlayerBoard(false);
-    PlayerBoard currentPlayer = new PlayerBoard(true);
+    Player player1 = new Player(true);
+    Player player2 = new Player(false);
+    Player currentPlayer = player1;
+
+    public static final int toWin = 4000;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        //start dialog
+        setupDialog();
+
         //setup
         StackPane root = new StackPane();
         //root.setStyle("-fx-background-color: #369c2f");
@@ -42,7 +49,7 @@ public class Main extends Application {
         gamePane.setStyle("-fx-background-color: #369c2f");
 
         //nextPlayer.setEnable(false);
-        gamePane.getItems().addAll(nextPlayer,currentPlayer);
+        gamePane.getItems().addAll(player2,player1);
 
         root.getChildren().addAll(gamePane, overlayPane);
 
@@ -68,9 +75,10 @@ public class Main extends Application {
             public void handle(ActionEvent e)
             {
                 currentPlayer.endTurn();
-                PlayerBoard temp = currentPlayer;
-                currentPlayer = nextPlayer;
-                nextPlayer = temp;
+                if(currentPlayer == player1)
+                    currentPlayer = player2;
+                else
+                    currentPlayer = player2;
                 currentPlayer.setEnable(true);
                 gamePane.getItems().remove(currentPlayer);
                 gamePane.getItems().add(currentPlayer);
@@ -79,15 +87,34 @@ public class Main extends Application {
         });
     }
 
+    public void setupDialog(){
+        TextInputDialog startDialog = new TextInputDialog("");
+        startDialog.setTitle("Welcome to Farkle");
+
+        startDialog.setHeaderText("Player 1 enter a name:");
+        startDialog.showAndWait();
+
+        player1.name = startDialog.getEditor().getText();
+        scoreBoard.setPlayer1NameLabel(player1.name);
+        startDialog.getEditor().setText("");
+
+        startDialog.setHeaderText("Player 2 enter a name:");
+        startDialog.showAndWait();
+
+        player2.name = startDialog.getEditor().getText();
+        scoreBoard.setPlayer2NameLabel(player2.name);
+        startDialog.getEditor().setText("");
+    }
+
     public void setupOverlay(BorderPane overlayPane){
         overlayPane.setPickOnBounds(false);
 
-        Rectangle scoreBox = new Rectangle(400,200, Color.WHITE); //make this
+        //Rectangle scoreBox = new Rectangle(400,200, Color.WHITE); //make this
         VBox scorePane = new VBox();
         scorePane.setAlignment(Pos.TOP_LEFT);
-        scorePane.getChildren().add(scoreBox);
+        scorePane.getChildren().add(scoreBoard);
         scorePane.setPickOnBounds(false);
-        //overlayPane.setLeft(scorePane);
+        overlayPane.setLeft(scorePane);
 
         menuButton.setMaxSize(30,30);
         ImageView gearIcon = new ImageView(new Image("farkle/settings_gear.png"));
@@ -120,6 +147,13 @@ public class Main extends Application {
         final Region spacer = new Region();
         // Make it always grow or shrink according to the available space
         HBox.setHgrow(spacer, Priority.ALWAYS);
+        return spacer;
+    }
+    public static Node createVSpacer() {
+        //https://stackoverflow.com/questions/40883858/how-to-evenly-distribute-elements-of-a-javafx-vbox
+        final Region spacer = new Region();
+        // Make it always grow or shrink according to the available space
+        VBox.setVgrow(spacer, Priority.ALWAYS);
         return spacer;
     }
 
