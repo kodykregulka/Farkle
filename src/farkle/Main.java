@@ -8,6 +8,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
@@ -22,17 +23,21 @@ public class Main extends Application {
     Button rollButton = new Button("Roll");
     Button stopButton = new Button("Score & Stop");
 
-    ScoreBoard scoreBoard = new ScoreBoard();
+    public static ScoreBoard scoreBoard = new ScoreBoard();
 
     SplitPane gamePane = new SplitPane();
     Player player1 = new Player(true);
     Player player2 = new Player(false);
     Player currentPlayer = player1;
+    Label currentPlayerLable = new Label();
 
     public static final int toWin = 4000;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        scoreBoard.player1 = player1;
+        scoreBoard.player2 = player2;
+
         //start dialog
         setupDialog();
 
@@ -78,11 +83,12 @@ public class Main extends Application {
                 if(currentPlayer == player1)
                     currentPlayer = player2;
                 else
-                    currentPlayer = player2;
+                    currentPlayer = player1;
                 currentPlayer.setEnable(true);
                 gamePane.getItems().remove(currentPlayer);
                 gamePane.getItems().add(currentPlayer);
                 rollButton.setText("Roll");
+                currentPlayerLable.setText(currentPlayer.name);
             }
         });
     }
@@ -104,6 +110,8 @@ public class Main extends Application {
         player2.name = startDialog.getEditor().getText();
         scoreBoard.setPlayer2NameLabel(player2.name);
         startDialog.getEditor().setText("");
+
+        currentPlayerLable.setText(player1.name);
     }
 
     public void setupOverlay(BorderPane overlayPane){
@@ -132,6 +140,8 @@ public class Main extends Application {
         controlPane.getChildren().add(createHSpacer());
         rollButton.setFont(controlFont);
         controlPane.getChildren().addAll(rollButton, createHSpacer());
+        currentPlayerLable.setFont(controlFont);
+        controlPane.getChildren().addAll(currentPlayerLable, createHSpacer());
         stopButton.setFont(controlFont);
         controlPane.getChildren().addAll(stopButton, createHSpacer());
 
