@@ -18,12 +18,11 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    //public static Pane root = new Pane();
     Button menuButton = new Button();
     Button rollButton = new Button("Roll");
     Button stopButton = new Button("Score & Stop");
 
-    public static ScoreBoard scoreBoard = new ScoreBoard();
+
 
     SplitPane gamePane = new SplitPane();
     Player player1 = new Player(true);
@@ -31,19 +30,19 @@ public class Main extends Application {
     Player currentPlayer = player1;
     Label currentPlayerLable = new Label();
 
+    public static ScoreBoard scoreBoard;
+
     public static final int toWin = 4000;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        scoreBoard.player1 = player1;
-        scoreBoard.player2 = player2;
 
-        //start dialog
+        scoreBoard = new ScoreBoard(player1, player2);
+
         setupDialog();
 
         //setup
         StackPane root = new StackPane();
-        //root.setStyle("-fx-background-color: #369c2f");
 
         //overlay
         BorderPane overlayPane = new BorderPane();
@@ -52,8 +51,6 @@ public class Main extends Application {
         //gamePane
         gamePane.setOrientation(Orientation.VERTICAL);
         gamePane.setStyle("-fx-background-color: #369c2f");
-
-        //nextPlayer.setEnable(false);
         gamePane.getItems().addAll(player2,player1);
 
         root.getChildren().addAll(gamePane, overlayPane);
@@ -65,8 +62,6 @@ public class Main extends Application {
         primaryStage.show();
 
         //event handlers
-        //menuButton
-        //rollButton
         rollButton.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
@@ -91,6 +86,8 @@ public class Main extends Application {
                 currentPlayerLable.setText(currentPlayer.name);
             }
         });
+
+        //menuButton
     }
 
     public void setupDialog(){
@@ -117,13 +114,14 @@ public class Main extends Application {
     public void setupOverlay(BorderPane overlayPane){
         overlayPane.setPickOnBounds(false);
 
-        //Rectangle scoreBox = new Rectangle(400,200, Color.WHITE); //make this
+        //scoreboard
         VBox scorePane = new VBox();
         scorePane.setAlignment(Pos.TOP_LEFT);
         scorePane.getChildren().add(scoreBoard);
         scorePane.setPickOnBounds(false);
         overlayPane.setLeft(scorePane);
 
+        //menuButton
         menuButton.setMaxSize(30,30);
         ImageView gearIcon = new ImageView(new Image("farkle/settings_gear.png"));
         gearIcon.setFitHeight(30);
@@ -134,6 +132,7 @@ public class Main extends Application {
         menuPane.getChildren().add(menuButton);
         overlayPane.setRight(menuPane);
 
+        //game control buttons
         HBox controlPane = new HBox();
         controlPane.setAlignment(Pos.BOTTOM_CENTER);
         Font controlFont = new Font(30);
@@ -147,12 +146,9 @@ public class Main extends Application {
 
         overlayPane.setBottom(controlPane);
     }
-    public void swapPlayers(){
-
-    }
-
 
     public static Node createHSpacer() {
+        //creates an expanding spacer
         //https://stackoverflow.com/questions/40883858/how-to-evenly-distribute-elements-of-a-javafx-vbox
         final Region spacer = new Region();
         // Make it always grow or shrink according to the available space
@@ -160,6 +156,7 @@ public class Main extends Application {
         return spacer;
     }
     public static Node createVSpacer() {
+        //creates an expanding spacer
         //https://stackoverflow.com/questions/40883858/how-to-evenly-distribute-elements-of-a-javafx-vbox
         final Region spacer = new Region();
         // Make it always grow or shrink according to the available space

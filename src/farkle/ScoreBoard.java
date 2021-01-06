@@ -26,7 +26,12 @@ public class ScoreBoard extends VBox {
     private Label roundScoreLabel = new Label("Round: 0");
     private Label selectedScoreLabel = new Label("Selected: 0");
 
-    ScoreBoard(){
+    //bad design that only supports 2 players
+    //was a result of quickly developed code that I plan to fix
+
+    ScoreBoard(Player p1, Player p2){
+        player1 = p1;
+        player2 = p2;
         setWidth(300);
         setHeight(100);
         setAlignment(Pos.BASELINE_CENTER);

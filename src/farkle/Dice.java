@@ -14,6 +14,8 @@ import javafx.scene.text.Text;
 import java.util.Random;
 
 public class Dice extends VBox {
+    //element that represents dice and dice position
+
     StackPane stackPane = new StackPane();
     Rectangle shape = new Rectangle();
     Text display = new Text();
