@@ -5,14 +5,14 @@ import javafx.scene.layout.HBox;
 
 import static farkle.Main.createHSpacer;
 
-public class PlayerBoard extends HBox{
+public class Player extends HBox{
 
     final int MAX_DICE = 6;
     final String initialWord = "FARKLE"; //must be same size as MAX_DICE
     Dice[] dice = new Dice[MAX_DICE];
-    //Pos dicePos;
+    String name = new String("");
 
-    PlayerBoard(boolean active){
+    Player(boolean active){
         setDisable(!active);
         setAlignment(Pos.CENTER);
         setupDice(active);
