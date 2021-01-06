@@ -20,11 +20,12 @@ public class Dice extends VBox {
 
     final int MAX_VALUE = 6;
     int value;
-    boolean isActive, isEnabled;
+    boolean isSelected, isEnabled;
     Random rand = new Random();
 
-    Dice(char input, boolean enabled){
-        setActive(enabled);
+    Dice(char input, boolean isFirst){
+        setSelected(!isFirst);
+        isEnabled = true;
 
         value = 0; //invalid value
         setPadding(new Insets(80,20,80,20));
@@ -45,7 +46,8 @@ public class Dice extends VBox {
         {
             @Override
             public void handle(MouseEvent t) {
-                setActive(!isActive);
+                if(isEnabled)
+                    setSelected(!isSelected);
             }
         });
     }
@@ -60,19 +62,19 @@ public class Dice extends VBox {
         display.setText(""+value);
         return value;
     }
-    void setActive(boolean active){
+    void setSelected(boolean selected){
         //whether or not dice is in play
-        isActive = active;
-        if(isActive){
-            setAlignment(Pos.TOP_CENTER);
-        }
-        else{
+        isSelected = selected;
+        if(isSelected){
             setAlignment(Pos.BOTTOM_CENTER);
         }
+        else{
+            setAlignment(Pos.TOP_CENTER);
+        }
     }
-    void endTurn(){
+    void shelfDice(){
         //shelf dice
-        if(isActive){
+        if(isSelected || !isEnabled){
             setAlignment(Pos.BOTTOM_CENTER);
         }
         else{
@@ -81,7 +83,8 @@ public class Dice extends VBox {
     }
     void reset(char input){
         //start new turn
-        isActive = true;
+        isSelected = false;
+        isEnabled = true;
         setAlignment(Pos.TOP_CENTER);
         setText(input);
     }

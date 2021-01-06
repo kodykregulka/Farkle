@@ -1,7 +1,9 @@
 package farkle;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -13,8 +15,11 @@ import static farkle.Main.createVSpacer;
 public class ScoreBoard extends VBox {
 
     private Label toWinLabel = new Label("To Win: " + toWin);
+
+    Player player1;
     private Label player1NameLabel = new Label();
     private Label player1ScoreLabel = new Label("0");
+    Player player2;
     private Label player2NameLabel = new Label();
     private Label player2ScoreLabel = new Label("0");
 
@@ -64,12 +69,24 @@ public class ScoreBoard extends VBox {
     public void setRoundScore(int input) {
         roundScoreLabel.setText("Round: " + input);
     }
-    public void setPlayer1GameScore(int score){
-        player1ScoreLabel.setText(Integer.toString(score));
-    }
-    public void setPlayer2GameScore(int score){
-        player2ScoreLabel.setText(Integer.toString(score));
-    }
+    public void updateGameScores(){
+        player1ScoreLabel.setText(Integer.toString(player1.gameScore));
+        player2ScoreLabel.setText(Integer.toString(player2.gameScore));
+        setSelectedScore(0);
+        setRoundScore(0);
 
+        if(player1.gameScore >= toWin|| player2.gameScore >= toWin){
+            Alert winnerAlert = new Alert(Alert.AlertType.INFORMATION);
+            winnerAlert.setTitle("Winner");
+            if(player1.gameScore >= toWin){
+                winnerAlert.setContentText("Congrats " + player1.name);
+            }
+            else{
+                winnerAlert.setContentText("Congrats " + player2.name);
+            }
+            winnerAlert.showAndWait();
 
+            Platform.exit();
+        }
+    }
 }
