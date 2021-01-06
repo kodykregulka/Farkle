@@ -17,10 +17,10 @@ public class Player extends HBox{
     int roundScore = 0;
     boolean firstToss = true;
 
-    Player(boolean active){
-        setDisable(!active);
+    Player(boolean isFirst){
+        setDisable(!isFirst);
         setAlignment(Pos.CENTER);
-        setupDice(active);
+        setupDice(isFirst);
 
     }
 
